@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام استعلام بيانات الطلاب الجامعي</title>
+    <!-- استيراد خط القاهرة العربي -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #27ae60;
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+
+        .search-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--secondary-color);
+        }
+
+        button {
+            padding: 15px 30px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #219150;
+            transform: translateY(-2px);
+        }
+
+        #loader {
+            display: none;
+            text-align: center;
+            margin: 20px;
+            color: #7f8c8d;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            display: none;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: right;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+            font-size: 17px;
+        }
+
+        .label-key {
+            font-weight: bold;
+            color: var(--primary-color);
+            width: 35%;
+            background-color: #fcfcfc;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .data-val {
+            color: #555;
+            font-weight: 500;
+        }
+
+        tr:hover {
+            background-color: #f9fdfa;
+        }
+
+        @media (max-width: 600px) {
+            .search-area {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>📄 استخراج السجل الكامل لبيانات الطالب</h2>
+    
+    <div class="search-area">
+        <input type="text" id="natID" placeholder="أدخل الرقم القومي للطالب (14 رقم)..." maxlength="14">
+        <button onclick="fetchStudentData()">استخراج البيانات</button>
+    </div>
+
+    <div id="loader">🔄 جاري الاتصال بموقع الجامعة واسترجاع البيانات...</div>
+
+    <table id="resultTable">
+        <thead>
+            <tr>
+                <th>نوع البيان</th>
+                <th>القيمة المستخرجة من السجل</th>
+            </tr>
+        </thead>
+        <tbody id="resultBody"></tbody>
+    </table>
+</div>
+
+<script>
+    async function fetchStudentData() {
+        const id = document.getElementById('natID').value;
+        const loader = document.getElementById('loader');
+        const table = document.getElementById('resultTable');
+        const tbody = document.getElementById('resultBody');
+
+        // رابط المحرك (Google Script) الخاص بك
+        const proxyUrl = 'https://script.google.com/macros/s/AKfycbxM2b90KnezzLOvP2L9NkQH9OAhZw_2aItK6vExxyQcmOlqo3buq4R6q-0_9gnBE-c_/exec';
+
+        if (id.length !== 14) {
+            alert("يرجى إدخال الرقم القومي المكون من 14 رقم!");
+            return;
+        }
+
+        // تحضير الواجهة
+        loader.style.display = "block";
+        table.style.display = "none";
+        tbody.innerHTML = "";
+
+        try {
+            // طلب البيانات من جوجل سكريبت
+            const response = await fetch(`${proxyUrl}?id=${id}`);
+            const htmlText = await response.text();
+            
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlText, 'text/html');
+
+            // خريطة الحقول المطلوب استخراجها
+            const mapping = [
+                { id: 'UserName', label: 'اسم الطالب بالكامل' },
+                { id: 'TextBox1', label: 'كود الطالب الجامعي' },
+                { id: 'txtgender', label: 'الجنس' },
+                { id: 'UserEmail', label: 'البريد الإلكتروني الجامعي' },
+                { id: 'UserPhoneNumber', label: 'رقم الهاتف المسجل' },
+                { id: 'UserAddress', label: 'عنوان السكن' },
+                { id: 'UserPass', label: 'كلمة مرور الحساب' },
+                { id: 'ddlFaculty', label: 'الكلية' },
+                { id: 'DDLPhases', label: 'المرحلة / المستوى الدراسي' },
+                { id: 'DDLDep', label: 'القسم التخصصي / الشعبة' }
+            ];
+
+            let foundData = false;
+            mapping.forEach(field => {
+                // البحث عن العنصر في الصفحة المسترجعة
+                const element = doc.querySelector(`[id$="${field.id}"]`);
+                if (element) {
+                    let val = "";
+                    if (element.tagName === 'SELECT') {
+                        val = element.options[element.selectedIndex]?.text;
+                    } else {
+                        val = element.value;
+                    }
+
+                    // التحقق من وجود قيمة حقيقية
+                    if (val && val !== "0" && !val.includes("--اختر")) {
+                        foundData = true;
+                        tbody.innerHTML += `
+                            <tr>
+                                <td class="label-key">${field.label}</td>
+                                <td class="data-val">${val}</td>
+                            </tr>`;
+                    }
+                }
+            });
+
+            if (foundData) {
+                table.style.display = "table";
+            } else {
+                alert("لم يتم العثور على بيانات لهذا الرقم القومي. تأكد من صحة الرقم.");
+            }
+
+        } catch (error) {
+            console.error("Error:", error);
+            alert("حدث خطأ أثناء جلب البيانات. تأكد من إعدادات النشر في Google Script.");
+        } finally {
+            loader.style.display = "none";
+        }
+    }
+</script>
+
+</body>
+</html>
