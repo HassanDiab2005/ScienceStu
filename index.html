@@ -3,409 +3,506 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>نظام استعلام بيانات الطلاب الجامعي</title>
-    <!-- استيراد خط القاهرة العربي -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet">
+    <title>استعلام السجل الأكاديمي للطلاب | كلية العلوم</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800;900&family=Tajawal:wght@500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', 'Cairo', sans-serif;
+            text-decoration: none;
+        }
+
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #27ae60;
-            --bg-color: #e0e5ec;
-            --shadow-light: #ffffff;
-            --shadow-dark: #a3b1c6;
-            --text-color: #4a5568;
+            --primary: #1e3c72;
+            --accent-blue: #2563eb;
+            --accent-green: #10b981;
+            --glass-bg: rgba(255, 255, 255, 0.82);
+            --glass-border: rgba(255, 255, 255, 0.9);
+            --glass-shadow: 0 20px 45px rgba(0, 0, 0, 0.25), 0 0 30px rgba(37, 99, 235, 0.15);
         }
 
         body {
-            font-family: 'Cairo', sans-serif;
-            background-color: var(--bg-color);
-            margin: 0;
-            padding: 20px;
-            color: var(--text-color);
+            /* خلفية بتدرجات لونية غنية لإبراز تأثير الزجاج الشفاف */
+            background: linear-gradient(135deg, #090e1a 0%, #1e3c72 45%, #065f46 80%, #991b1b 100%);
+            background-size: 300% 300%;
+            animation: bgMove 12s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 25px 15px;
+            color: #1e293b;
         }
 
-        .container {
-            max-width: 900px;
-            margin: 20px auto;
-            background: var(--bg-color);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 9px 9px 16px var(--shadow-dark), -9px -9px 16px var(--shadow-light);
+        @keyframes bgMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        h2 {
+        /* الحاوية الزجاجية الفاخرة (3D Glassmorphism) */
+        .glass-container {
+            width: 880px;
+            max-width: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 2px solid var(--glass-border);
+            border-radius: 26px;
+            box-shadow: var(--glass-shadow);
+            padding: 35px 30px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* لمسة لمعان زجاجية في أعلى البطاقة */
+        .glass-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 100%);
+            pointer-events: none;
+        }
+
+        .header-title {
             text-align: center;
-            color: var(--primary-color);
-            padding-bottom: 15px;
-            margin-bottom: 30px;
-            box-shadow: inset 0px -3px 5px -3px var(--shadow-dark);
-            font-size: 22px;
+            margin-bottom: 25px;
+            position: relative;
         }
 
+        .header-title h2 {
+            font-family: 'Cairo', sans-serif;
+            font-size: 24px;
+            font-weight: 900;
+            color: #0f172a;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .header-title p {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #64748b;
+        }
+
+        /* منطقة البحث */
         .search-area {
             display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
+            gap: 12px;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            right: 16px;
+            color: #2563eb;
+            font-size: 18px;
         }
 
         input[type="text"] {
-            flex: 1;
-            padding: 15px 20px;
-            background: var(--bg-color);
-            border: none;
-            border-radius: 15px;
-            font-size: 16px;
+            width: 100%;
+            padding: 14px 46px 14px 18px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #cbd5e1;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #0f172a;
             outline: none;
-            color: var(--primary-color);
-            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
-            transition: 0.3s;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
 
         input[type="text"]:focus {
-            box-shadow: inset 8px 8px 15px var(--shadow-dark), inset -8px -8px 15px var(--shadow-light);
+            border-color: #2563eb;
+            background: #ffffff;
+            box-shadow: 0 0 15px rgba(37, 99, 235, 0.25);
         }
 
-        button {
-            padding: 15px 30px;
-            background-color: var(--bg-color);
-            color: var(--secondary-color);
+        button.search-btn {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2563eb 100%);
+            color: #ffffff;
             border: none;
-            border-radius: 15px;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 800;
             cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
-            transition: all 0.2s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             white-space: nowrap;
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+            transition: all 0.25s ease;
         }
 
-        button:hover {
-            color: #219150;
-            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+        button.search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.45);
+        }
+
+        button.search-btn:active {
             transform: scale(0.98);
         }
 
+        /* اللودر */
         #loader {
             display: none;
+            background: rgba(239, 246, 255, 0.9);
+            border: 1.5px solid #bfdbfe;
+            border-radius: 14px;
+            padding: 14px;
+            margin: 20px 0;
             text-align: center;
-            margin: 20px;
-            color: #2c3e50;
-            font-weight: bold;
-            font-size: 15px;
+            font-size: 14.5px;
+            font-weight: 800;
+            color: #1e40af;
+            animation: pulseCard 1.5s infinite;
         }
 
-        table {
+        @keyframes pulseCard {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* عرض السجلات على شكل كروت زجاجية */
+        #resultTable {
             display: none;
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 15px;
         }
 
-        thead {
-            display: block;
-            margin-bottom: 15px;
-        }
-
-        thead tr {
-            display: flex;
-            padding: 0 20px;
-        }
-
-        th {
-            background-color: transparent;
-            color: var(--primary-color);
-            font-size: 17px;
-            text-align: right;
-            border: none;
-            padding: 10px;
-        }
-        
-        th:first-child { width: 35%; }
-        th:last-child { width: 65%; }
-
-        tbody {
+        .records-list {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
 
-        tr {
+        .data-card-item {
+            background: rgba(255, 255, 255, 0.92);
+            border: 1.5px solid #e2e8f0;
+            border-right: 5px solid #2563eb;
+            border-radius: 16px;
+            padding: 14px 18px;
             display: flex;
-            flex-direction: row;
-            background: var(--bg-color);
-            border-radius: 15px;
-            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
-            padding: 18px 20px;
             align-items: center;
-            border: none;
+            justify-content: space-between;
+            gap: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            transition: all 0.25s ease;
         }
 
-        td {
-            border: none;
-            padding: 0;
+        .data-card-item:hover {
+            transform: translateY(-2px);
+            border-color: #93c5fd;
+            border-right-color: #10b981;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
         }
 
         .label-key {
-            font-weight: bold;
-            color: var(--primary-color);
-            width: 35%;
-            border-left: 4px solid var(--secondary-color);
-            padding-right: 10px;
+            font-size: 14.5px;
+            font-weight: 800;
+            color: #334155;
+            width: 32%;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .label-key i {
+            color: #2563eb;
             font-size: 15px;
         }
 
         .data-val-wrapper {
-            width: 65%;
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
+            gap: 10px;
+            overflow: hidden;
         }
 
         .data-val {
-            color: var(--primary-color);
-            font-weight: 700;
+            font-size: 15px;
+            font-weight: 800;
+            color: #0f172a;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 8px 14px;
+            border-radius: 10px;
             flex: 1;
             overflow-x: auto;
             white-space: nowrap;
-            padding: 12px 15px;
-            border-radius: 10px;
-            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
-            font-size: 14.5px;
             scrollbar-width: thin;
-            scrollbar-color: var(--secondary-color) transparent;
         }
 
         .data-val::-webkit-scrollbar {
             height: 4px;
         }
         .data-val::-webkit-scrollbar-thumb {
-            background: var(--secondary-color);
+            background: #cbd5e1;
             border-radius: 4px;
         }
 
         .copy-btn {
-            padding: 10px 14px;
-            font-size: 13.5px;
+            background: #f0fdf4;
+            color: #166534;
+            border: 1.5px solid #bbf7d0;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
             white-space: nowrap;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 5px;
-            box-shadow: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light);
+            gap: 6px;
+            transition: all 0.2s ease;
         }
 
+        .copy-btn:hover {
+            background: #22c55e;
+            color: #ffffff;
+            border-color: #22c55e;
+            transform: scale(1.03);
+        }
+
+        /* تجاوب مثالي وفائق مع جميع شاشات الهواتف الصغيرة */
         @media (max-width: 768px) {
             body {
-                padding: 10px;
+                padding: 10px 8px;
             }
 
-            .container {
-                padding: 20px 15px;
+            .glass-container {
+                padding: 22px 14px;
+                border-radius: 20px;
+            }
+
+            .header-title h2 {
+                font-size: 19px;
+            }
+
+            .header-title p {
+                font-size: 12px;
             }
 
             .search-area {
                 flex-direction: column;
+                gap: 10px;
             }
 
-            thead {
-                display: none;
+            button.search-btn {
+                width: 100%;
+                justify-content: center;
+                padding: 12px;
+                font-size: 14.5px;
             }
 
-            tr {
+            .data-card-item {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 12px;
-                padding: 16px 14px;
+                gap: 10px;
+                padding: 14px 12px;
+                border-right-width: 4px;
             }
 
             .label-key {
                 width: 100%;
-                border-left: none;
-                border-bottom: 2px solid var(--secondary-color);
+                font-size: 13.5px;
+                border-bottom: 1px dashed #e2e8f0;
                 padding-bottom: 6px;
-                padding-right: 0;
             }
 
             .data-val-wrapper {
                 width: 100%;
-                flex-direction: row;
             }
 
             .data-val {
                 font-size: 13.5px;
-                padding: 10px 12px;
+                padding: 7px 10px;
+            }
+
+            .copy-btn {
+                padding: 7px 10px;
+                font-size: 12px;
             }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>📄 استخراج السجل الكامل لبيانات الطالب</h2>
+<div class="glass-container">
+    <div class="header-title">
+        <h2><i class="fa-solid fa-id-card-clip text-primary"></i> استعلام السجل الأكاديمي لبيانات الطلاب</h2>
+        <p>الاستعلام المباشر عبر خادم وسجلات Google Apps Script الرسمية للكلية</p>
+    </div>
     
     <div class="search-area">
-        <input type="text" id="natID" placeholder="أدخل الرقم القومي للطالب (14 رقم)..." maxlength="14">
-        <button id="searchBtn" onclick="fetchStudentData()">استخراج البيانات</button>
+        <div class="input-wrapper">
+            <input type="text" id="natID" placeholder="أدخل الرقم القومي للطالب (14 رقماً)..." maxlength="14">
+            <i class="fa-solid fa-address-card"></i>
+        </div>
+        <button class="search-btn" id="searchBtn" onclick="fetchStudentData()">
+            <i class="fa-solid fa-magnifying-glass"></i> استخراج السجل
+        </button>
     </div>
 
-    <div id="loader">🔄 جاري الاتصال بقاعدة البيانات واسترجاع السجل...</div>
+    <div id="loader"><i class="fa-solid fa-circle-notch fa-spin"></i> جاري الاتصال بخادم Google Script واسترجاع السجل...</div>
 
-    <table id="resultTable">
-        <thead>
-            <tr>
-                <th>نوع البيان</th>
-                <th>القيمة المستخرجة من السجل</th>
-            </tr>
-        </thead>
-        <tbody id="resultBody"></tbody>
-    </table>
+    <div id="resultTable">
+        <div class="records-list" id="resultBody"></div>
+    </div>
 </div>
 
 <script>
+    // وظيفة نسخ البيان للحافظة
     function copyData(button, text) {
         navigator.clipboard.writeText(text).then(() => {
             const originalHTML = button.innerHTML;
-            button.innerHTML = "✔ تم النسخ";
-            button.style.color = "#27ae60";
+            button.innerHTML = '<i class="fa-solid fa-check"></i> تم النسخ';
+            button.style.background = "#22c55e";
+            button.style.color = "#ffffff";
             
             setTimeout(() => {
                 button.innerHTML = originalHTML;
+                button.style.background = "";
                 button.style.color = "";
-            }, 2000);
+            }, 1800);
         }).catch(err => {
-            console.error('Failed to copy: ', err);
+            console.error('Copy failed: ', err);
         });
     }
 
+    // جلب البيانات من Google Script فقط
     async function fetchStudentData() {
         const id = document.getElementById('natID').value.trim();
         const loader = document.getElementById('loader');
-        const table = document.getElementById('resultTable');
-        const tbody = document.getElementById('resultBody');
+        const resultTable = document.getElementById('resultTable');
+        const containerBody = document.getElementById('resultBody');
         const searchBtn = document.getElementById('searchBtn');
 
-        // رابط الـ Worker الآمن الخاص بك (قاعدة بيانات الطلاب)
-        const WORKER_API_URL = 'https://lingering-morning-1c34.hstudy3rd.workers.dev';
-        const proxyUrl = 'https://script.google.com/macros/s/AKfycbxM2b90KnezzLOvP2L9NkQH9OAhZw_2aItK6vExxyQcmOlqo3buq4R6q-0_9gnBE-c_/exec';
+        // رابط Google Script المباشر والوحيد لجلب البيانات
+        const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbxM2b90KnezzLOvP2L9NkQH9OAhZw_2aItK6vExxyQcmOlqo3buq4R6q-0_9gnBE-c_/exec';
 
         if (id.length !== 14 || isNaN(id)) {
-            alert("يرجى إدخال الرقم القومي المكون من 14 رقم صحيح!");
+            alert("يرجى إدخال الرقم القومي المكون من 14 رقماً صحيحاً!");
             return;
         }
 
         loader.style.display = "block";
-        table.style.display = "none";
-        tbody.innerHTML = "";
+        resultTable.style.display = "none";
+        containerBody.innerHTML = "";
         searchBtn.disabled = true;
 
         let foundData = false;
 
-        function addRow(label, val) {
+        // دالة إنشاء كرت البيانات
+        function addRecord(label, val, iconClass = "fa-circle-check") {
             if (!val || String(val).trim() === "" || val === "0" || String(val).includes("--اختر") || val === "undefined" || val === "null") return;
             foundData = true;
-            tbody.innerHTML += `
-                <tr>
-                    <td class="label-key">${label}</td>
-                    <td class="data-val-wrapper">
-                        <div class="data-val">${String(val).trim()}</div>
-                        <button class="copy-btn" onclick="copyData(this, '${String(val).trim().replace(/'/g, "\\'")}')">📋 نسخ</button>
-                    </td>
-                </tr>`;
+
+            const safeVal = String(val).trim();
+            const escapedVal = safeVal.replace(/'/g, "\\'");
+
+            containerBody.innerHTML += `
+                <div class="data-card-item">
+                    <div class="label-key">
+                        <i class="fa-solid ${iconClass}"></i>
+                        <span>${label}</span>
+                    </div>
+                    <div class="data-val-wrapper">
+                        <div class="data-val">${safeVal}</div>
+                        <button class="copy-btn" onclick="copyData(this, '${escapedVal}')">
+                            <i class="fa-regular fa-copy"></i> نسخ
+                        </button>
+                    </div>
+                </div>`;
         }
 
         try {
-            // 1. الاستعلام المباشر والآمن من الـ Worker الخاص بقاعدة بياناتك
-            try {
-                const workerRes = await fetch(WORKER_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'studentCheckStatus',
-                        natID: id
-                    })
-                });
+            // الاستعلام من خادم Google Script فقط
+            const response = await fetch(`${googleScriptUrl}?id=${encodeURIComponent(id)}`);
+            const htmlText = await response.text();
+            
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlText, 'text/html');
 
-                if (workerRes.ok) {
-                    const wJson = await workerRes.json();
-                    if (wJson && wJson.student) {
-                        const s = wJson.student;
-                        addRow('اسم الطالب بالكامل', s.name || s.UserName);
-                        addRow('الرقم القومي', s.natID);
-                        addRow('كود الطالب الجامعي (ID)', s.extraID || s.TextBox1);
-                        addRow('البريد الإلكتروني الجامعي', s.email || s.UserEmail);
-                        addRow('رقم الهاتف المسجل', s.phone || s.UserPhoneNumber);
-                        addRow('الكلية', s.faculty || s.ddlFaculty);
-                        addRow('المرحلة / المستوى الدراسي', s.phase || s.DDLPhases);
-                        addRow('القسم التخصصي / الشعبة', s.mainDep || s.DDLDep);
-                        addRow('التخصص الدراسي المختار', s.takhsos);
-                        addRow('المقررات الدراسية المسجلة', s.subjects);
-                        addRow('الجنس', s.gender || s.txtgender);
-                        addRow('عنوان السكن', s.address || s.UserAddress);
-                        addRow('حالة الاعتماد', s.status === 'accepted' ? 'مقبول ✅' : (s.status === 'rejected' ? 'مرفوض ❌' : 'قيد المراجعة ⏳'));
+            const mapping = [
+                { id: 'UserName', label: 'اسم الطالب بالكامل', icon: 'fa-user' },
+                { id: 'TextBox1', label: 'كود الطالب الجامعي (ID)', icon: 'fa-id-badge' },
+                { id: 'txtgender', label: 'النوع / الجنس', icon: 'fa-venus-mars' },
+                { id: 'UserEmail', label: 'البريد الإلكتروني الجامعي', icon: 'fa-envelope' },
+                { id: 'UserPhoneNumber', label: 'رقم الهاتف المسجل', icon: 'fa-phone' },
+                { id: 'UserAddress', label: 'عنوان السكن والمحافظة', icon: 'fa-location-dot' },
+                { id: 'UserPass', label: 'كلمة مرور الحساب الجامعي', icon: 'fa-key' },
+                { id: 'ddlFaculty', label: 'الكلية', icon: 'fa-building-columns' },
+                { id: 'DDLPhases', label: 'المرحلة / المستوى الدراسي', icon: 'fa-layer-group' },
+                { id: 'DDLDep', label: 'القسم الأكاديمي / الشعبة', icon: 'fa-graduation-cap' }
+            ];
+
+            mapping.forEach(field => {
+                let val = "";
+                const element = doc.querySelector(`[id*="${field.id}" i]`);
+
+                if (element) {
+                    if (element.tagName === 'SELECT') {
+                        const selOpt = element.querySelector('option[selected]') || element.options[element.selectedIndex];
+                        val = selOpt ? selOpt.textContent : "";
+                    } else if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                        val = element.getAttribute('value') || element.value || "";
+                    } else {
+                        val = element.textContent || element.innerText || "";
                     }
                 }
-            } catch (we) {
-                console.warn("Worker search fallback...", we);
-            }
 
-            // 2. محاولة احتياطية في حال كان السيرفر الآخر متاحاً
-            if (!foundData) {
-                try {
-                    const response = await fetch(`${proxyUrl}?id=${id}`);
-                    const htmlText = await response.text();
-                    
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(htmlText, 'text/html');
+                // فحص إضافي عبر RegExp في حال لم يلتقطه الـ DOMParser
+                if (!val || val.trim() === "" || val.includes("--اختر")) {
+                    const inputRegex = new RegExp(`id=["'][^"']*${field.id}[^"']*["'][^>]*value=["']([^"']*)["']`, 'i');
+                    const m1 = htmlText.match(inputRegex);
+                    if (m1 && m1[1]) val = m1[1];
 
-                    const mapping = [
-                        { id: 'UserName', label: 'اسم الطالب بالكامل' },
-                        { id: 'TextBox1', label: 'كود الطالب الجامعي' },
-                        { id: 'txtgender', label: 'الجنس' },
-                        { id: 'UserEmail', label: 'البريد الإلكتروني الجامعي' },
-                        { id: 'UserPhoneNumber', label: 'رقم الهاتف المسجل' },
-                        { id: 'UserAddress', label: 'عنوان السكن' },
-                        { id: 'UserPass', label: 'كلمة مرور الحساب' },
-                        { id: 'ddlFaculty', label: 'الكلية' },
-                        { id: 'DDLPhases', label: 'المرحلة / المستوى الدراسي' },
-                        { id: 'DDLDep', label: 'القسم التخصصي / الشعبة' }
-                    ];
-
-                    mapping.forEach(field => {
-                        let val = "";
-                        const element = doc.querySelector(`[id*="${field.id}" i]`);
-                        if (element) {
-                            if (element.tagName === 'SELECT') {
-                                const selOpt = element.querySelector('option[selected]') || element.options[element.selectedIndex];
-                                val = selOpt ? selOpt.textContent : "";
-                            } else if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                                val = element.getAttribute('value') || element.value || "";
-                            } else {
-                                val = element.textContent || element.innerText || "";
-                            }
-                        }
-
-                        if (!val || val.trim() === "" || val.includes("--اختر")) {
-                            const inputRegex = new RegExp(`id="[^"]*${field.id}[^"]*"[^>]*value="([^"]*)"`, 'i');
-                            const mInput = htmlText.match(inputRegex);
-                            if (mInput && mInput[1]) val = mInput[1];
-                        }
-
-                        addRow(field.label, val);
-                    });
-                } catch (pe) {
-                    console.warn("Proxy fallback ignored", pe);
+                    if (!val) {
+                        const revRegex = new RegExp(`value=["']([^"']*)["'][^>]*id=["'][^"']*${field.id}[^"']*["']`, 'i');
+                        const m2 = htmlText.match(revRegex);
+                        if (m2 && m2[1]) val = m2[1];
+                    }
                 }
-            }
+
+                addRecord(field.label, val, field.icon);
+            });
 
             if (foundData) {
-                table.style.display = "block";
+                resultTable.style.display = "block";
             } else {
-                alert("لم يتم العثور على بيانات مسجلة لهذا الرقم القومي في قاعدة البيانات. تأكد من الرقم وحاول مجدداً.");
+                alert("لم يتم العثور على أي سجل مسجل بهذا الرقم القومي في خادم Google Script. تأكد من صحة الرقم.");
             }
 
         } catch (error) {
             console.error("Fetch Error:", error);
-            alert("حدث خطأ أثناء الاتصال. يرجى التحقق من اتصال الإنترنت.");
+            alert("حدث خطأ أثناء الاتصال بخادم Google Script. يرجى التأكد من اتصال الإنترنت.");
         } finally {
             loader.style.display = "none";
             searchBtn.disabled = false;
