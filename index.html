@@ -2,16 +2,18 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>نظام استعلام بيانات الطلاب الجامعي</title>
     <!-- استيراد خط القاهرة العربي -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-color: #2c3e50;
             --secondary-color: #27ae60;
-            --bg-color: #f4f7f6;
-            --text-color: #333;
+            --bg-color: #e0e5ec;
+            --shadow-light: #ffffff;
+            --shadow-dark: #a3b1c6;
+            --text-color: #4a5568;
         }
 
         body {
@@ -25,107 +27,213 @@
         .container {
             max-width: 900px;
             margin: 20px auto;
-            background: white;
+            background: var(--bg-color);
             padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            box-shadow: 9px 9px 16px var(--shadow-dark), -9px -9px 16px var(--shadow-light);
         }
 
         h2 {
             text-align: center;
             color: var(--primary-color);
-            border-bottom: 3px solid var(--secondary-color);
             padding-bottom: 15px;
             margin-bottom: 30px;
+            box-shadow: inset 0px -3px 5px -3px var(--shadow-dark);
+            font-size: 22px;
         }
 
         .search-area {
             display: flex;
-            gap: 10px;
+            gap: 15px;
             margin-bottom: 30px;
         }
 
         input[type="text"] {
             flex: 1;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
+            padding: 15px 20px;
+            background: var(--bg-color);
+            border: none;
+            border-radius: 15px;
             font-size: 16px;
             outline: none;
+            color: var(--primary-color);
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
             transition: 0.3s;
         }
 
         input[type="text"]:focus {
-            border-color: var(--secondary-color);
+            box-shadow: inset 8px 8px 15px var(--shadow-dark), inset -8px -8px 15px var(--shadow-light);
         }
 
         button {
             padding: 15px 30px;
-            background-color: var(--secondary-color);
-            color: white;
+            background-color: var(--bg-color);
+            color: var(--secondary-color);
             border: none;
-            border-radius: 10px;
+            border-radius: 15px;
             cursor: pointer;
             font-weight: bold;
             font-size: 16px;
-            transition: 0.3s;
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            transition: all 0.2s ease-in-out;
+            white-space: nowrap;
         }
 
         button:hover {
-            background-color: #219150;
-            transform: translateY(-2px);
+            color: #219150;
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+            transform: scale(0.98);
         }
 
         #loader {
             display: none;
             text-align: center;
             margin: 20px;
-            color: #7f8c8d;
+            color: #2c3e50;
             font-weight: bold;
+            font-size: 15px;
         }
 
         table {
+            display: none;
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
-            display: none;
-            background: #fff;
-            border-radius: 10px;
-            overflow: hidden;
+            margin-top: 20px;
         }
 
-        th, td {
-            padding: 15px;
-            text-align: right;
-            border-bottom: 1px solid #eee;
+        thead {
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        thead tr {
+            display: flex;
+            padding: 0 20px;
         }
 
         th {
-            background-color: #f8f9fa;
+            background-color: transparent;
             color: var(--primary-color);
             font-size: 17px;
+            text-align: right;
+            border: none;
+            padding: 10px;
+        }
+        
+        th:first-child { width: 35%; }
+        th:last-child { width: 65%; }
+
+        tbody {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        tr {
+            display: flex;
+            flex-direction: row;
+            background: var(--bg-color);
+            border-radius: 15px;
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+            padding: 18px 20px;
+            align-items: center;
+            border: none;
+        }
+
+        td {
+            border: none;
+            padding: 0;
         }
 
         .label-key {
             font-weight: bold;
             color: var(--primary-color);
             width: 35%;
-            background-color: #fcfcfc;
             border-left: 4px solid var(--secondary-color);
+            padding-right: 10px;
+            font-size: 15px;
+        }
+
+        .data-val-wrapper {
+            width: 65%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
         }
 
         .data-val {
-            color: #555;
-            font-weight: 500;
+            color: var(--primary-color);
+            font-weight: 700;
+            flex: 1;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 12px 15px;
+            border-radius: 10px;
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+            font-size: 14.5px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--secondary-color) transparent;
         }
 
-        tr:hover {
-            background-color: #f9fdfa;
+        .data-val::-webkit-scrollbar {
+            height: 4px;
+        }
+        .data-val::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 4px;
         }
 
-        @media (max-width: 600px) {
+        .copy-btn {
+            padding: 10px 14px;
+            font-size: 13.5px;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 20px 15px;
+            }
+
             .search-area {
                 flex-direction: column;
+            }
+
+            thead {
+                display: none;
+            }
+
+            tr {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+                padding: 16px 14px;
+            }
+
+            .label-key {
+                width: 100%;
+                border-left: none;
+                border-bottom: 2px solid var(--secondary-color);
+                padding-bottom: 6px;
+                padding-right: 0;
+            }
+
+            .data-val-wrapper {
+                width: 100%;
+                flex-direction: row;
+            }
+
+            .data-val {
+                font-size: 13.5px;
+                padding: 10px 12px;
             }
         }
     </style>
@@ -137,10 +245,10 @@
     
     <div class="search-area">
         <input type="text" id="natID" placeholder="أدخل الرقم القومي للطالب (14 رقم)..." maxlength="14">
-        <button onclick="fetchStudentData()">استخراج البيانات</button>
+        <button id="searchBtn" onclick="fetchStudentData()">استخراج البيانات</button>
     </div>
 
-    <div id="loader">🔄 جاري الاتصال بموقع الجامعة واسترجاع البيانات...</div>
+    <div id="loader">🔄 جاري الاتصال بقاعدة البيانات واسترجاع السجل...</div>
 
     <table id="resultTable">
         <thead>
@@ -154,82 +262,153 @@
 </div>
 
 <script>
+    function copyData(button, text) {
+        navigator.clipboard.writeText(text).then(() => {
+            const originalHTML = button.innerHTML;
+            button.innerHTML = "✔ تم النسخ";
+            button.style.color = "#27ae60";
+            
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+                button.style.color = "";
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+        });
+    }
+
     async function fetchStudentData() {
-        const id = document.getElementById('natID').value;
+        const id = document.getElementById('natID').value.trim();
         const loader = document.getElementById('loader');
         const table = document.getElementById('resultTable');
         const tbody = document.getElementById('resultBody');
+        const searchBtn = document.getElementById('searchBtn');
 
-        // رابط المحرك (Google Script) الخاص بك
+        // رابط الـ Worker الآمن الخاص بك (قاعدة بيانات الطلاب)
+        const WORKER_API_URL = 'https://lingering-morning-1c34.hstudy3rd.workers.dev';
         const proxyUrl = 'https://script.google.com/macros/s/AKfycbxM2b90KnezzLOvP2L9NkQH9OAhZw_2aItK6vExxyQcmOlqo3buq4R6q-0_9gnBE-c_/exec';
 
-        if (id.length !== 14) {
-            alert("يرجى إدخال الرقم القومي المكون من 14 رقم!");
+        if (id.length !== 14 || isNaN(id)) {
+            alert("يرجى إدخال الرقم القومي المكون من 14 رقم صحيح!");
             return;
         }
 
-        // تحضير الواجهة
         loader.style.display = "block";
         table.style.display = "none";
         tbody.innerHTML = "";
+        searchBtn.disabled = true;
+
+        let foundData = false;
+
+        function addRow(label, val) {
+            if (!val || String(val).trim() === "" || val === "0" || String(val).includes("--اختر") || val === "undefined" || val === "null") return;
+            foundData = true;
+            tbody.innerHTML += `
+                <tr>
+                    <td class="label-key">${label}</td>
+                    <td class="data-val-wrapper">
+                        <div class="data-val">${String(val).trim()}</div>
+                        <button class="copy-btn" onclick="copyData(this, '${String(val).trim().replace(/'/g, "\\'")}')">📋 نسخ</button>
+                    </td>
+                </tr>`;
+        }
 
         try {
-            // طلب البيانات من جوجل سكريبت
-            const response = await fetch(`${proxyUrl}?id=${id}`);
-            const htmlText = await response.text();
-            
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlText, 'text/html');
+            // 1. الاستعلام المباشر والآمن من الـ Worker الخاص بقاعدة بياناتك
+            try {
+                const workerRes = await fetch(WORKER_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'studentCheckStatus',
+                        natID: id
+                    })
+                });
 
-            // خريطة الحقول المطلوب استخراجها
-            const mapping = [
-                { id: 'UserName', label: 'اسم الطالب بالكامل' },
-                { id: 'TextBox1', label: 'كود الطالب الجامعي' },
-                { id: 'txtgender', label: 'الجنس' },
-                { id: 'UserEmail', label: 'البريد الإلكتروني الجامعي' },
-                { id: 'UserPhoneNumber', label: 'رقم الهاتف المسجل' },
-                { id: 'UserAddress', label: 'عنوان السكن' },
-                { id: 'UserPass', label: 'كلمة مرور الحساب' },
-                { id: 'ddlFaculty', label: 'الكلية' },
-                { id: 'DDLPhases', label: 'المرحلة / المستوى الدراسي' },
-                { id: 'DDLDep', label: 'القسم التخصصي / الشعبة' }
-            ];
-
-            let foundData = false;
-            mapping.forEach(field => {
-                // البحث عن العنصر في الصفحة المسترجعة
-                const element = doc.querySelector(`[id$="${field.id}"]`);
-                if (element) {
-                    let val = "";
-                    if (element.tagName === 'SELECT') {
-                        val = element.options[element.selectedIndex]?.text;
-                    } else {
-                        val = element.value;
-                    }
-
-                    // التحقق من وجود قيمة حقيقية
-                    if (val && val !== "0" && !val.includes("--اختر")) {
-                        foundData = true;
-                        tbody.innerHTML += `
-                            <tr>
-                                <td class="label-key">${field.label}</td>
-                                <td class="data-val">${val}</td>
-                            </tr>`;
+                if (workerRes.ok) {
+                    const wJson = await workerRes.json();
+                    if (wJson && wJson.student) {
+                        const s = wJson.student;
+                        addRow('اسم الطالب بالكامل', s.name || s.UserName);
+                        addRow('الرقم القومي', s.natID);
+                        addRow('كود الطالب الجامعي (ID)', s.extraID || s.TextBox1);
+                        addRow('البريد الإلكتروني الجامعي', s.email || s.UserEmail);
+                        addRow('رقم الهاتف المسجل', s.phone || s.UserPhoneNumber);
+                        addRow('الكلية', s.faculty || s.ddlFaculty);
+                        addRow('المرحلة / المستوى الدراسي', s.phase || s.DDLPhases);
+                        addRow('القسم التخصصي / الشعبة', s.mainDep || s.DDLDep);
+                        addRow('التخصص الدراسي المختار', s.takhsos);
+                        addRow('المقررات الدراسية المسجلة', s.subjects);
+                        addRow('الجنس', s.gender || s.txtgender);
+                        addRow('عنوان السكن', s.address || s.UserAddress);
+                        addRow('حالة الاعتماد', s.status === 'accepted' ? 'مقبول ✅' : (s.status === 'rejected' ? 'مرفوض ❌' : 'قيد المراجعة ⏳'));
                     }
                 }
-            });
+            } catch (we) {
+                console.warn("Worker search fallback...", we);
+            }
+
+            // 2. محاولة احتياطية في حال كان السيرفر الآخر متاحاً
+            if (!foundData) {
+                try {
+                    const response = await fetch(`${proxyUrl}?id=${id}`);
+                    const htmlText = await response.text();
+                    
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(htmlText, 'text/html');
+
+                    const mapping = [
+                        { id: 'UserName', label: 'اسم الطالب بالكامل' },
+                        { id: 'TextBox1', label: 'كود الطالب الجامعي' },
+                        { id: 'txtgender', label: 'الجنس' },
+                        { id: 'UserEmail', label: 'البريد الإلكتروني الجامعي' },
+                        { id: 'UserPhoneNumber', label: 'رقم الهاتف المسجل' },
+                        { id: 'UserAddress', label: 'عنوان السكن' },
+                        { id: 'UserPass', label: 'كلمة مرور الحساب' },
+                        { id: 'ddlFaculty', label: 'الكلية' },
+                        { id: 'DDLPhases', label: 'المرحلة / المستوى الدراسي' },
+                        { id: 'DDLDep', label: 'القسم التخصصي / الشعبة' }
+                    ];
+
+                    mapping.forEach(field => {
+                        let val = "";
+                        const element = doc.querySelector(`[id*="${field.id}" i]`);
+                        if (element) {
+                            if (element.tagName === 'SELECT') {
+                                const selOpt = element.querySelector('option[selected]') || element.options[element.selectedIndex];
+                                val = selOpt ? selOpt.textContent : "";
+                            } else if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                                val = element.getAttribute('value') || element.value || "";
+                            } else {
+                                val = element.textContent || element.innerText || "";
+                            }
+                        }
+
+                        if (!val || val.trim() === "" || val.includes("--اختر")) {
+                            const inputRegex = new RegExp(`id="[^"]*${field.id}[^"]*"[^>]*value="([^"]*)"`, 'i');
+                            const mInput = htmlText.match(inputRegex);
+                            if (mInput && mInput[1]) val = mInput[1];
+                        }
+
+                        addRow(field.label, val);
+                    });
+                } catch (pe) {
+                    console.warn("Proxy fallback ignored", pe);
+                }
+            }
 
             if (foundData) {
-                table.style.display = "table";
+                table.style.display = "block";
             } else {
-                alert("لم يتم العثور على بيانات لهذا الرقم القومي. تأكد من صحة الرقم.");
+                alert("لم يتم العثور على بيانات مسجلة لهذا الرقم القومي في قاعدة البيانات. تأكد من الرقم وحاول مجدداً.");
             }
 
         } catch (error) {
-            console.error("Error:", error);
-            alert("حدث خطأ أثناء جلب البيانات. تأكد من إعدادات النشر في Google Script.");
+            console.error("Fetch Error:", error);
+            alert("حدث خطأ أثناء الاتصال. يرجى التحقق من اتصال الإنترنت.");
         } finally {
             loader.style.display = "none";
+            searchBtn.disabled = false;
         }
     }
 </script>
